@@ -3,65 +3,56 @@ function data_SOEA = SOEA(Tasks,pop,gen,p_il,p_cr,F)
     clc    
 %     tic       
 
-    D=Tasks.dims;%Î¬¶ÈÕâ¿é£ºÎÒÈÎÎñµ¥ÈÎÎñÓÅ»¯Ó¦¸ÃÊÇ×Ô¼º½ø»¯×Ô¼ºµÄ£¬²»Ó¦¸ÃÀ­Ö±µ½Í³Ò»ËÑË÷¿Õ¼ä
+    D=Tasks.dims;
   
-    %¶¨ÒåÓÅ»¯Æ÷ p_il ÎÒµÄÀí½âÊÇ¿ØÖÆ¾Ö²¿×ÔÎÒÑ§Ï°£¨¾ÖÄÚËÑË÷µÄ¸ÅÂÊ£©
-    %p_il=0Ê±ºòÊÊÓ¦¶ÈÖµ¾ÍÊÇÖ±½Ó½«µã´øÈëº¯ÊıÇóÖµµ±×÷ÊÊÓ¦¶ÈÖµ
     options = optimoptions(@fminunc,'Display','off','Algorithm','quasi-newton','MaxIter',2);  
     
-    %fnceval_calls = 0;  % fncevalµÄµ÷ÓÃ´ÎÊı?
-    EvBestFitness = zeros(gen); %Ã¿Ò»´úÃ¿¸öÈÎÎñµÄ¸öÌå×î¼ÑÊÊÓ¦¶È
-    EvBestobj= zeros(gen,D); %Ã¿Ò»´úµÄ×î¼ÑÊÊÓ¦¶È¸öÌå
-    %TotalEvaluations=zeros(gen);    %Ã¿´úµÄÀÛ¼ÆÊÊÓ¦¶ÈÖµ 
+    %fnceval_calls = 0;  
+    EvBestFitness = zeros(gen); 
+    EvBestobj= zeros(gen,D);
+    %TotalEvaluations=zeros(gen);  
 
-    
-   % ³õÊ¼»¯ÖÖÈº
+   % åˆå§‹åŒ–ç§ç¾¤
  
        for i= 1:pop
            population(i) = Chromosome();
            population(i) = initialize(population(i),D);
 %            population(i) = evaluate(population(i),Tasks,p_il,options);
             [population(i).rnvec,population(i).factorial_costs] = evaluate_SOO(population(i),Tasks,p_il,options);
-           %TotalEvaluations(i,1)=TotalEvaluations(1)+population(i).factorial_costs;%¼ÇÂ¼³õÊ¼Ã¿¸öÈÎÎñµÄ³õÊ¼ÊÊÓ¦¶ÈÖµÖ®ºÍ
+           %TotalEvaluations(i,1)=TotalEvaluations(1)+population(i).factorial_costs;%è®°å½•åˆå§‹æ¯ä¸ªä»»åŠ¡çš„åˆå§‹é€‚åº”åº¦å€¼ä¹‹å’Œ
        end     
 
     factorial_cost=zeros(1,pop);  
-    %ÅÅĞò£¬ÊÊÓ¦¶ÈÖµÓÉ¸ßµ½µÍ£¨º¯ÊıÖµÓÉĞ¡µ½´ó£©
 
             for i= 1:pop
                 factorial_cost(i)=population(i).factorial_costs; 
             end
-            [xxx,y]=sort(factorial_cost);%º¯ÊıÖµÓÉµÍµ½¸ßÅÅĞò
+            [xxx,y]=sort(factorial_cost);
             population(:)=population(y);
-            EvBestobj(1,:)=population(1).rnvec;%È¡³öÃ¿¸öÈÎÎñµ±´úµÄ×îÓÅ¸öÌå 
-            EvBestFitness(1)=population(1).factorial_costs;%È¡³öÃ¿¸öÈÎÎñµ±´úµÄ×îÓÅ¸öÌåÊÊÓ¦¶È
+            EvBestobj(1,:)=population(1).rnvec;
+            EvBestFitness(1)=population(1).factorial_costs;
 
 %         save population population;
-        %³õÊ¼»¯Á½¸öÈÎÎñµÄµµ°¸³Ø£º¶¨ÒåÎª¿Õ
-     
-    %´úÊı±éÀú:°´ÕÕÔ­ÎÄ£¬ÏÈÅĞ¶ÏÊÇ·ñ»ñÈ¡¡°ÖªÊ¶¡±£¬ÔÙ½øĞĞ±äÒì½»²æÑ¡Ôñ
+
     
     generation=1;
     while generation < gen
-        %disp('½øÈëµü´ú');
+        %disp('è¿›å…¥è¿­ä»£');
         generation = generation + 1;
         disp(generation);
-           % ÎÒÈÏÎªÕâ¿éÈÔÈ»Ó¦¸ÃÏŞÖÆÎª0-1
-            lb=zeros(1,D); % ²ÎÊıÈ¡ÖµÏÂ½ç
-            ub=ones(1,D); % ²ÎÊıÈ¡ÖµÉÏ½ç
-%             lb=Tasks.Lb; % ²ÎÊıÈ¡ÖµÏÂ½ç  
-%             ub=Tasks.Ub; % ²ÎÊıÈ¡ÖµÉÏ½ç
+
+            lb=zeros(1,D);
+            ub=ones(1,D);
+%             lb=Tasks.Lb; 
+%             ub=Tasks.Ub;
 
             
             for j = 1:pop          
-                % ÌáÈ¡¸öÌå
+                % æå–ä¸ªä½“
                 x=population(j).rnvec;
                 %x
-                % ±äÒì²Ù×÷ Mutation
+                % å˜å¼‚æ“ä½œ Mutation
 
-                    %ÎŞÖªÊ¶Ç¨ÒÆ
-                 %Ñ¡ÔñÈı¸ö²»Í¬µÄ¸öÌå
-                    
                     r1 = unidrnd(pop);
                     r2 = unidrnd(pop);
                     while r1 == r2
@@ -71,9 +62,9 @@ function data_SOEA = SOEA(Tasks,pop,gen,p_il,p_cr,F)
                     while r3 == r2 || r3 == r1
                         r3 = unidrnd(pop);
                     end
-                    y=population(r1).rnvec+F*(population(r2).rnvec-population(r3).rnvec); % ²úÉúÖĞ¼äÌå
+                    y=population(r1).rnvec+F*(population(r2).rnvec-population(r3).rnvec); % äº§ç”Ÿä¸­é—´ä½“
                     %y
-                    % ·ÀÖ¹ÖĞ¼äÌåÔ½½ç
+                    % é˜²æ­¢ä¸­é—´ä½“è¶Šç•Œ
                     for ik =1:D 
                         if y(ik)<lb(ik)
                             y(ik)=lb(ik);
@@ -82,38 +73,36 @@ function data_SOEA = SOEA(Tasks,pop,gen,p_il,p_cr,F)
                         end
                     end
            
-                %±äÒì
-                mid_population=Chromosome();%¶¨ÒåÒ»¸öÖĞ¼ä¸öÌå£¬ÓÃ×÷±È½ÏÊ±µÄ±£Áô
-                z=zeros(1,D); % ³õÊ¼»¯Ò»¸öĞÂ¸öÌå
-                j0=randi([1,D]); % ²úÉúÒ»¸öÎ±Ëæ»úÊı£¬¼´Ñ¡È¡´ı½»»»Î¬¶È±àºÅ
-                for d=1:D % ±éÀúÃ¿¸öÎ¬¶È
-                    if d==j0 || rand<=p_cr % Èç¹ûµ±Ç°Î¬¶ÈÊÇ´ı½»»»Î¬¶È»òÕßËæ»ú¸ÅÂÊĞ¡ÓÚ½»²æ¸ÅÂÊ
-                        z(d)=y(d); % ĞÂ¸öÌåµ±Ç°Î¬¶ÈÖµµÈÓÚÖĞ¼äÌå¶ÔÓ¦Î¬¶ÈÖµ
+                mid_population=Chromosome();
+                z=zeros(1,D);
+                j0=randi([1,D]); 
+                for d=1:D 
+                    if d==j0 || rand<=p_cr 
+                        z(d)=y(d); 
                     else
-                        z(d)=x(d); % ĞÂ¸öÌåµ±Ç°Î¬¶ÈÖµµÈÓÚµ±Ç°¸öÌå¶ÔÓ¦Î¬¶ÈÖµ
+                        z(d)=x(d); 
                     end
                 end
                 mid_population.rnvec=z;
                 %save z z;
-                %Ñ¡Ôñ
+                %é€‰æ‹©
                      [~,mid_population.factorial_costs] = evaluate_SOO(mid_population,Tasks,p_il,options);
                     if mid_population.factorial_costs <= population(j).factorial_costs
                         %disp([num2str(mid_populition.factorial_costs),num2str(population(i,j).factorial_costs)]);
                         population(j)=mid_population;
-                        %disp(['±È½Ïºó£º',num2str(population(i,j).factorial_costs)]);
+                        %disp(['æ¯”è¾ƒåï¼š',num2str(population(i,j).factorial_costs)]);
                     end   
             end
-            %×ÓÈÎÎñÖÖÈº±éÀú½áÊø
-            %ÅÅĞò£¬»ñµÃµ±´ú×îÓÅ¸öÌå
+
             for i= 1:pop
                 factorial_cost(i)=population(i).factorial_costs; 
             end
-            [~,y]=sort(factorial_cost);%º¯ÊıÖµÓÉµÍµ½¸ßÅÅĞò
+            [~,y]=sort(factorial_cost);%å‡½æ•°å€¼ç”±ä½åˆ°é«˜æ’åº
             population(:)=population(y);
-            EvBestobj(generation,:)=population(1).rnvec;   %×îÓÅ¸öÌå 
-            EvBestFitness(generation)=population(1).factorial_costs;%×îÓÅÊÊÓ¦¶È
+            EvBestobj(generation,:)=population(1).rnvec;   %æœ€ä¼˜ä¸ªä½“ 
+            EvBestFitness(generation)=population(1).factorial_costs;%æœ€ä¼˜é€‚åº”åº¦
           
-%             ´òÓ¡Êä³öÃ¿Ò»´ú
+%             æ‰“å°è¾“å‡ºæ¯ä¸€ä»£
               disp(['DE Generation = ', num2str(generation), '  Task2 best factorial costs = ', num2str(EvBestFitness(generation))]);   
     end
     
@@ -121,7 +110,7 @@ function data_SOEA = SOEA(Tasks,pop,gen,p_il,p_cr,F)
          save EvBestobj EvBestobj;
          save EvBestFitness EvBestFitness;
 %          save zhuanzhi zhuanzhi;
-      %º¯Êı·µ»ØÖµ
+      %å‡½æ•°è¿”å›å€¼
       data_SOEA.wall_clock_time=toc;  
       data_SOEA.EvBestFitness=EvBestFitness(gen);
     end
