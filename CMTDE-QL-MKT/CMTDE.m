@@ -12,29 +12,29 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
         D(i)=Tasks(i).dims;
     end
     D_multitask=max(D);
-    %pop=no_of_tasks*pop_M;%Í³Ò»ËÑË÷¿Õ¼ä´óĞ¡
+    %pop=no_of_tasks*pop_M;%ç»Ÿä¸€æœç´¢ç©ºé—´å¤§å°
 
     options = optimoptions(@fminunc,'Display','off','Algorithm','quasi-newton','MaxIter',2);  
-    EvBestFitness = zeros(no_of_tasks,gen); %Ã¿Ò»´úÃ¿¸öÈÎÎñµÄ¸öÌå×î¼ÑÊÊÓ¦¶È
-    EvBestobj= zeros(gen,D_multitask,no_of_tasks); %Ã¿Ò»´úÃ¿¸öÈÎÎñµÄ×î¼ÑÊÊÓ¦¶È¸öÌå
-    task_selection=zeros(1,no_of_tasks);%Ö÷ÈÎÎñÑ¡Ôñ¸ÅÂÊ
-    task_selection_record=zeros(gen,1);%¼ÇÂ¼±»Ñ¡ÔñµÄÖ÷ÈÎÎñĞòºÅ
-    aidtask_selection=zeros(no_of_tasks,no_of_tasks);%¸¨ÖúÈÎÎñ¸ÅÂÊ
-    task_rewards=zeros(gen,no_of_tasks);%ÈÎÎñ½±Àø
-    aidtask_rewards=zeros(no_of_tasks,no_of_tasks);%¸¨ÖúÈÎÎñ½±Àø
-    Rb=zeros(gen,no_of_tasks);%ÈÎÎñ½±Àø_¶ÔÈ«¾Ö×îÓÅµÄÓ°Ïì
-    Rp=zeros(gen,no_of_tasks);%ÈÎÎñ½±Àø¡ªÊÕÁ²¿ìËÙ³Ì¶È
-    zx=zeros(no_of_tasks,D_multitask);%±£´æ×Ô¼ºµÄÖÊĞÄ
-    pop_distance=zeros(no_of_tasks,gen);%¼ÆËãÖÊĞÄÓë×îÓÅ½âµÄ¾àÀë
+    EvBestFitness = zeros(no_of_tasks,gen); %æ¯ä¸€ä»£æ¯ä¸ªä»»åŠ¡çš„ä¸ªä½“æœ€ä½³é€‚åº”åº¦
+    EvBestobj= zeros(gen,D_multitask,no_of_tasks); %æ¯ä¸€ä»£æ¯ä¸ªä»»åŠ¡çš„æœ€ä½³é€‚åº”åº¦ä¸ªä½“
+    task_selection=zeros(1,no_of_tasks);%ä¸»ä»»åŠ¡é€‰æ‹©æ¦‚ç‡
+    task_selection_record=zeros(gen,1);%è®°å½•è¢«é€‰æ‹©çš„ä¸»ä»»åŠ¡åºå·
+    aidtask_selection=zeros(no_of_tasks,no_of_tasks);%è¾…åŠ©ä»»åŠ¡æ¦‚ç‡
+    task_rewards=zeros(gen,no_of_tasks);%ä»»åŠ¡å¥–åŠ±
+    aidtask_rewards=zeros(no_of_tasks,no_of_tasks);%è¾…åŠ©ä»»åŠ¡å¥–åŠ±
+    Rb=zeros(gen,no_of_tasks);%ä»»åŠ¡å¥–åŠ±_å¯¹å…¨å±€æœ€ä¼˜çš„å½±å“
+    Rp=zeros(gen,no_of_tasks);%ä»»åŠ¡å¥–åŠ±â€”æ”¶æ•›å¿«é€Ÿç¨‹åº¦
+    zx=zeros(no_of_tasks,D_multitask);%ä¿å­˜è‡ªå·±çš„è´¨å¿ƒ
+    pop_distance=zeros(no_of_tasks,gen);%è®¡ç®—è´¨å¿ƒä¸æœ€ä¼˜è§£çš„è·ç¦»
    
-    Q_table=zeros(2*no_of_tasks,no_of_tasks);%Q±íÓÃÓÚÇ¿»¯Ñ§Ï°´æÖµ
-    task_state=zeros(no_of_tasks,1);%¼ÇÂ¼ÈÎÎñµÄ½ø»¯×´Ì¬
-    U_table=zeros(2*no_of_tasks,no_of_tasks);%¸¨ÖúQ±í½øĞĞ¸¨ÖúÈÎÎñµÄÑ¡Ôñ
-    aidpick_number=zeros(2*no_of_tasks,no_of_tasks);%Ã¿ÖÖ×´Ì¬ÏÂ¸¨ÖúÈÎÎñ±»Ñ¡ÔñµÄ´ÎÊı
+    Q_table=zeros(2*no_of_tasks,no_of_tasks);%Qè¡¨ç”¨äºå¼ºåŒ–å­¦ä¹ å­˜å€¼
+    task_state=zeros(no_of_tasks,1);%è®°å½•ä»»åŠ¡çš„è¿›åŒ–çŠ¶æ€
+    U_table=zeros(2*no_of_tasks,no_of_tasks);%è¾…åŠ©Qè¡¨è¿›è¡Œè¾…åŠ©ä»»åŠ¡çš„é€‰æ‹©
+    aidpick_number=zeros(2*no_of_tasks,no_of_tasks);%æ¯ç§çŠ¶æ€ä¸‹è¾…åŠ©ä»»åŠ¡è¢«é€‰æ‹©çš„æ¬¡æ•°
     UCB_table=zeros(2*no_of_tasks,no_of_tasks);
     t_num=zeros(1,no_of_tasks);
-    globalbest_record=zeros(gen,1);%Í³¼ÆÃ¿´úµÄ×îÓÅ¸öÌå
-    dy=zeros(no_of_tasks,1);%Ö±¾¶±ä»¯´ÎÊı
+    globalbest_record=zeros(gen,1);%ç»Ÿè®¡æ¯ä»£çš„æœ€ä¼˜ä¸ªä½“
+    dy=zeros(no_of_tasks,1);%ç›´å¾„å˜åŒ–æ¬¡æ•°
     
     
 %     epsilon=0.02;
@@ -51,15 +51,15 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
    end
 
     factorial_cost=zeros(1,pop_M);  
-    %ÅÅĞò£¬ÊÊÓ¦¶ÈÖµÓÉ¸ßµ½µÍ£¨º¯ÊıÖµÓÉĞ¡µ½´ó£©
+    %æ’åºï¼Œé€‚åº”åº¦å€¼ç”±é«˜åˆ°ä½ï¼ˆå‡½æ•°å€¼ç”±å°åˆ°å¤§ï¼‰
         for i=1:no_of_tasks  
             for j= 1:pop_M
                 factorial_cost(j)=population(i,j).factorial_costs; 
             end
-            [~,y]=sort(factorial_cost);%º¯ÊıÖµÓÉµÍµ½¸ßÅÅĞò
+            [~,y]=sort(factorial_cost);%å‡½æ•°å€¼ç”±ä½åˆ°é«˜æ’åº
             population(i,:)=population(i,y);
-            EvBestobj(2,:,i)=population(i,1).rnvec;%È¡³öÃ¿¸öÈÎÎñµ±´úµÄ×îÓÅ¸öÌå 
-            EvBestFitness(i,2)=population(i,1).factorial_costs;%È¡³öÃ¿¸öÈÎÎñµ±´úµÄ×îÓÅ¸öÌåÊÊÓ¦¶È
+            EvBestobj(2,:,i)=population(i,1).rnvec;%å–å‡ºæ¯ä¸ªä»»åŠ¡å½“ä»£çš„æœ€ä¼˜ä¸ªä½“ 
+            EvBestFitness(i,2)=population(i,1).factorial_costs;%å–å‡ºæ¯ä¸ªä»»åŠ¡å½“ä»£çš„æœ€ä¼˜ä¸ªä½“é€‚åº”åº¦
         end
          
         globalbest=min(EvBestFitness(:,1));
@@ -69,7 +69,7 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
            task_selection(i)=1/no_of_tasks;
         end
         P0=0.3;
-        %³õÊ¼»¯¸¨ÖúÈÎÎñÑ¡Ôñ¸ÅÂÊ¾ØÕó
+        %åˆå§‹åŒ–è¾…åŠ©ä»»åŠ¡é€‰æ‹©æ¦‚ç‡çŸ©é˜µ
         for i=1:no_of_tasks
             for j=1:no_of_tasks
                 if j==i
@@ -80,8 +80,7 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
             end
         end  
         
-        
-    %´úÊı±éÀú:°´ÕÕÔ­ÎÄ£¬ÏÈÅĞ¶ÏÊÇ·ñ»ñÈ¡¡°ÖªÊ¶¡±£¬ÔÙ½øĞĞ±äÒì½»²æÑ¡Ôñ
+
     generation=1;
 %     c_num=0;
     
@@ -91,7 +90,7 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
         disp(generation);
          current_population=population;
 
-            first_gen=B*gen;%±ÜÃâÀäÆô¶¯
+            first_gen=B*gen;%é¿å…å†·å¯åŠ¨
             if generation<=first_gen
                 task_index=randi([1,no_of_tasks]) ;
             else
@@ -100,7 +99,7 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
                   
 %             i=task_index;
             
-            if t_num(i)>=5  %Í£ÖÍãĞÖµ
+            if t_num(i)>=5  %åœæ»é˜ˆå€¼
                 while task_index==i
                     task_index=randi([1,no_of_tasks]) ;
                 end 
@@ -112,16 +111,16 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
 %             pick_number(i)=pick_number(i)+1;
             
             
-            %¶¨Òå×Ó´úÖÖÈº
+            %å®šä¹‰å­ä»£ç§ç¾¤
             for j= 1:pop_M
                 offspring(j) = Chromosome();
             end
         
-            lb=zeros(1,D_multitask); % ²ÎÊıÈ¡ÖµÏÂ½ç
-            ub=ones(1,D_multitask); % ²ÎÊıÈ¡ÖµÉÏ½ç
+            lb=zeros(1,D_multitask); % å‚æ•°å–å€¼ä¸‹ç•Œ
+            ub=ones(1,D_multitask); % å‚æ•°å–å€¼ä¸Šç•Œ
             
             
-            %ÌôÑ¡³ö¸¨ÖúÈÎÎñÀ´Ô´
+            %æŒ‘é€‰å‡ºè¾…åŠ©ä»»åŠ¡æ¥æº
 %            disp(task_state(i)); 
             if task_state(i)==0
                 q_index=(i-1)*2+2;
@@ -133,8 +132,8 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
             zero_indices = find(zero_elements);
             
             if numel(zero_indices) >= 1
-                % Ê¹ÓÃrandperm´´½¨Ò»¸öËæ»úÅÅÁĞµÄË÷Òı£¬È»ºóÈ¡µÚÒ»¸ö
-                disp('Ëæ»úÑ¡Ôñ¸¨ÖúÈÎÎñ');
+                % ä½¿ç”¨randpermåˆ›å»ºä¸€ä¸ªéšæœºæ’åˆ—çš„ç´¢å¼•ï¼Œç„¶åå–ç¬¬ä¸€ä¸ª
+                disp('éšæœºé€‰æ‹©è¾…åŠ©ä»»åŠ¡');
                 aid_index = zero_indices(randperm(numel(zero_indices), 1));
             else
                 temp_q=Q_table(q_index,:);
@@ -160,23 +159,21 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
                     U_table(q_index,s)=(temp_u/aidpick_number(q_index,s))^0.5;
                 end
              
-                %°ÑÔªÖªÊ¶Ç¨ÒÆ¼Ó½øÀ´
-               
-                 %ÔÚÃ¿Ò»´úµÄ¿ªÊ¼·¢ÉúÔªÖªÊ¶Ç¨ÒÆ
+                 %åœ¨æ¯ä¸€ä»£çš„å¼€å§‹å‘ç”Ÿå…ƒçŸ¥è¯†è¿ç§»
                [tr_population,dy] = AMKT(population,pop_M,generation,EvBestFitness,zx,pop_distance,dy,task_index,aid_index);
 
                
-                %ÖÖÈººÏ²¢_ºáÏòºÏ²¢
+                %ç§ç¾¤åˆå¹¶_æ¨ªå‘åˆå¹¶
                 Pf_population=[current_population(i,:),tr_population];
 %                 save Pf_population Pf_population;
                
              
-             %ÄÚ²¿½ø»¯
+             %å†…éƒ¨è¿›åŒ–
             for j = 1:pop_M
-                % ÌáÈ¡¸öÌå
+                % æå–ä¸ªä½“
                   x=population(i,j).rnvec;
 
-                  %±äÒì
+                  %å˜å¼‚
                   r1 = unidrnd(pop_M);
                   x1=population(i,r1).rnvec;
                   r2 = unidrnd(2*pop_M);
@@ -184,16 +181,16 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
                  while r3 == r2
                      r3 = unidrnd(2*pop_M);
                  end
-                  y=x1+F*(Pf_population(r2).rnvec-Pf_population(r3).rnvec); % ²úÉúÖĞ¼äÌå
+                  y=x1+F*(Pf_population(r2).rnvec-Pf_population(r3).rnvec); % äº§ç”Ÿä¸­é—´ä½“
                                     
                      
                     %y
-                    % ·ÀÖ¹ÖĞ¼äÌåÔ½½ç
+                    % é˜²æ­¢ä¸­é—´ä½“è¶Šç•Œ
                     y=max(y,lb);
                     y=min(y,ub);
 
                %disp(y);
-                %±äÒì
+                %å˜å¼‚
                 mid_population=Chromosome();
                 z=zeros(1,D_multitask);
                 j0=randi([1,D_multitask]); 
@@ -215,19 +212,19 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
             end             
 
 
-         %ÅÅĞò£¬»ñµÃµ±´ú×îÓÅ¸öÌå
+         %æ’åºï¼Œè·å¾—å½“ä»£æœ€ä¼˜ä¸ªä½“
            for w4= 1:pop_M
                 factorial_cost(w4)=offspring(w4).factorial_costs; 
            end
             
-            [~,s]=sort(factorial_cost);%º¯ÊıÖµÓÉµÍµ½¸ßÅÅĞò
+            [~,s]=sort(factorial_cost);%å‡½æ•°å€¼ç”±ä½åˆ°é«˜æ’åº
          
             offspring=offspring(s);
             population(i,:)=offspring(1:pop_M); 
            
             
-            EvBestobj(generation,:,i)=population(i,1).rnvec;   %×îÓÅ¸öÌå 
-            EvBestFitness(i,generation)=population(i,1).factorial_costs;%×îÓÅ
+            EvBestobj(generation,:,i)=population(i,1).rnvec;   %æœ€ä¼˜ä¸ªä½“ 
+            EvBestFitness(i,generation)=population(i,1).factorial_costs;%æœ€ä¼˜
 
            for p=1:no_of_tasks
                if p~=i
@@ -240,17 +237,17 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
            population= EST(Tasks,population,p_il,options,task_index,aid_index);
            
            EST_population=zeros(1,pop_M);
-           %ÅÅĞò£¬»ñµÃµ±´ú×îÓÅ¸öÌå
+           %æ’åºï¼Œè·å¾—å½“ä»£æœ€ä¼˜ä¸ªä½“
            for j= 1:pop_M
                EST_population(j)= population(i,j).factorial_costs;
            end   
-           [~,s]=sort(EST_population);%º¯ÊıÖµÓÉµÍµ½¸ßÅÅĞò
+           [~,s]=sort(EST_population);%å‡½æ•°å€¼ç”±ä½åˆ°é«˜æ’åº
           population(i,:)= population(i,s);
 
 
-          %»ñÈ¡×îÓÅ¸öÌå
-         EvBestobj(generation,:,i)= population(i,1).rnvec;   %×îÓÅ¸öÌå 
-         EvBestFitness(i,generation)=population(i,1).factorial_costs;%×îÓÅÊÊÓ¦¶È
+          %è·å–æœ€ä¼˜ä¸ªä½“
+         EvBestobj(generation,:,i)= population(i,1).rnvec;   %æœ€ä¼˜ä¸ªä½“ 
+         EvBestFitness(i,generation)=population(i,1).factorial_costs;%æœ€ä¼˜é€‚åº”åº¦
            
  
         popu_rnvec=zeros(pop_M,D_multitask);
@@ -264,12 +261,12 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
         pop_distance(i,generation)=sqrt(sum((pre_zx-pre_bestobj).^2));
 
 
-       %¼ÆËã½±Àø
+       %è®¡ç®—å¥–åŠ±
        current_best=globalbest;
-       globalbest=min(EvBestFitness(:,generation));%¸üĞÂÈ«¾Ö×îÓÅ
+       globalbest=min(EvBestFitness(:,generation));%æ›´æ–°å…¨å±€æœ€ä¼˜
        globalbest_record(generation)=globalbest;
 
-       %Ö÷ÈÎÎñ
+       %ä¸»ä»»åŠ¡
        fg=(current_best-EvBestFitness(i,generation))/current_best;
        Rb(generation,i)=max(fg,0);
        sum_Rp=0;
@@ -280,7 +277,7 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
        end
        Rp(generation,i)=sum_Rp/pop_M;
        task_rewards(generation,i)=0.5*Rb(generation,i)+0.5*Rp(generation,i);
-        %¸¨ÖúÈÎÎñ
+        %è¾…åŠ©ä»»åŠ¡
 
         if aid_index==i
              aidtask_rewards(i,aid_index)=task_rewards(generation,i);
@@ -307,10 +304,10 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
           task_rewards(generation,aid_index)=aidtask_rewards(i,aid_index);
 
 
-           %¸üĞÂ¸¨ÖúÈÎÎñÑ¡Ôñ¸ÅÂÊ
+           %æ›´æ–°è¾…åŠ©ä»»åŠ¡é€‰æ‹©æ¦‚ç‡
           Q_table=QL(Q_table,aidtask_rewards(i,:),i,EvBestFitness,generation,aid_index,q_index,gen,t_num);
            
-           %Ö÷ÈÎÎñÌôÑ¡¸ÅÂÊ
+           %ä¸»ä»»åŠ¡æŒ‘é€‰æ¦‚ç‡
            nk=0;p_min=0.1;
            gk=zeros(1,no_of_tasks);
            qk=zeros(1,no_of_tasks);
@@ -332,8 +329,8 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
            end
 
            
-           %×îºóÔÙ¸üĞÂÈÎÎñ½ø»¯×´Ì¬
-           if EvBestFitness(i,generation)==EvBestFitness(i,generation-1) %Í³¼ÆÓĞ¼¸´úÏİÈë¾Ö²¿×îÓÅ
+           %æœ€åå†æ›´æ–°ä»»åŠ¡è¿›åŒ–çŠ¶æ€
+           if EvBestFitness(i,generation)==EvBestFitness(i,generation-1) %ç»Ÿè®¡æœ‰å‡ ä»£é™·å…¥å±€éƒ¨æœ€ä¼˜
                t_num(i)=t_num(i)+1;
                task_state(i)=0;
            else
@@ -341,7 +338,7 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
                task_state(i)=1;
            end
            
-              %Í³Ò»À´Ô´
+              %ç»Ÿä¸€æ¥æº
            for j = 1:pop_M
                population(i,j).population_source=i;
            end
@@ -353,12 +350,12 @@ function data_CMTDE=CMTDE(Tasks,pop_M,gen,p_il,p_cr,F,B)
 %      save  Q_table  Q_table;
 
      
-    %´òÓ¡Êä³ö×îºóÒ»´ú×îÓÅÖµ
+    %æ‰“å°è¾“å‡ºæœ€åä¸€ä»£æœ€ä¼˜å€¼
     for i =1:no_of_tasks    
           disp(['CMTDE Generation = ', num2str(generation), '  Task',num2str(i),' best factorial costs = ', num2str(EvBestFitness(i,gen))]);  
     end
     
-    %º¯Êı·µ»ØÖµ
+    %å‡½æ•°è¿”å›å€¼
       data_CMTDE.wall_clock_time=toc;  
       data_CMTDE.EvBestFitness=EvBestFitness(:,gen).';
       data_CMTDE.best=globalbest;
