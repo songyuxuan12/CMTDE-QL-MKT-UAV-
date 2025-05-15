@@ -1,37 +1,36 @@
 function selected_indices = rouletteWheelSelection(probability, num_to_select)  
-    % ÊäÈë£º  
-    % fitnesses - ¸öÌåµÄÊÊÓ¦¶ÈÊı×é£¬Í¨³£ÎªÒ»¸öÕıÊıÊı×é  
-    % population_size - ÖÖÈº´óĞ¡£¬¼´fitnessesÊı×éµÄ³¤¶È  
-    % num_to_select - ĞèÒªÑ¡ÔñµÄ¸öÌåÊıÁ¿  
+    % è¾“å…¥ï¼š  
+    % fitnesses 
+    % population_size - ç§ç¾¤å¤§å°ï¼Œå³fitnessesæ•°ç»„çš„é•¿åº¦  
+    % num_to_select - éœ€è¦é€‰æ‹©çš„ä¸ªä½“æ•°é‡  
       
-    % Êä³ö£º  
-    % selected_indices - ±»Ñ¡ÖĞµÄ¸öÌåµÄË÷ÒıÊı×é  
+    % è¾“å‡ºï¼š  
+    % selected_indices - è¢«é€‰ä¸­çš„ä¸ªä½“çš„ç´¢å¼•æ•°ç»„  
 %     [~,population_size]=size(fitnesses); 
-    % ¹éÒ»»¯ÊÊÓ¦¶È  
+    % å½’ä¸€åŒ–é€‚åº”åº¦  
     normalized_probability = probability ./ sum(probability);  
       
-    % ¼ÆËãÀÛ»ı¸ÅÂÊ  
+    % è®¡ç®—ç´¯ç§¯æ¦‚ç‡  
     cumulative_probs = cumsum(normalized_probability);  
       
-    % ³õÊ¼»¯±»Ñ¡ÖĞµÄ¸öÌåË÷ÒıÊı×é  
+    % åˆå§‹åŒ–è¢«é€‰ä¸­çš„ä¸ªä½“ç´¢å¼•æ•°ç»„  
     selected_indices = zeros(1, num_to_select);  
       
-    % ÂÖÅÌ¶ÄÑ¡Ôñ  
+    % è½®ç›˜èµŒé€‰æ‹©  
     for i = 1:num_to_select  
-        % Éú³ÉÒ»¸ö[0, 1)Ö®¼äµÄËæ»úÊı  
+        % ç”Ÿæˆä¸€ä¸ª[0, 1)ä¹‹é—´çš„éšæœºæ•°  
         r = rand();  
 %          disp(r); 
-        % ²éÕÒËæ»úÊı¶ÔÓ¦µÄË÷Òı  
+        % æŸ¥æ‰¾éšæœºæ•°å¯¹åº”çš„ç´¢å¼•  
         [~, idx] = min(abs(cumulative_probs - r));  
           
-        % ±£´æÑ¡ÖĞµÄË÷Òı  
+        % ä¿å­˜é€‰ä¸­çš„ç´¢å¼•  
         selected_indices(i) = idx;  
           
-        % ±ÜÃâÖØ¸´Ñ¡Ôñ£¨¿ÉÑ¡£¬Èç¹ûÔÊĞíÖØ¸´Ñ¡ÔñÔò×¢ÊÍµôÏÂÃæÕâĞĞ£©  
         cumulative_probs(idx) = Inf;  
     end  
       
-    % Èç¹û²»ÔÊĞíÖØ¸´Ñ¡Ôñ£¬ÔòÖØÖÃÀÛ»ı¸ÅÂÊÊı×é  
+
     if ~isempty(find(cumulative_probs == Inf))  
         cumulative_probs(~isinf(cumulative_probs)) = cumsum(normalized_probability(~isinf(cumulative_probs)));  
     end  
