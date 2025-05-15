@@ -2,16 +2,16 @@
 tic
 
 clc
-%% MKTDEµÄ²ÎÊı
-pop_M=100; % ÖÖÈº´óĞ¡
+
+pop_M=100; % ç§ç¾¤å¤§å°
 gen=100; % 
-p_il = 0; %ÎŞ¾Ö²¿ËÑË÷
-p_cr=0.9;  %½»²æ¸ÅÂÊ
-F=0.5;   %Í»±ä±ÈÀıÒòÊı
-B=0.4;  %±ÜÃâÀäÆô¶¯µÄ²ÎÊı
-total_case=1; %¶àÈÎÎñÎÊÌâ×ÜÊıÁ¿
-repetition=1; %ÖØ¸´ÔËĞĞ´ÎÊı
-results_record=zeros(repetition,15);% 4 case ³ËÒÔ×é¼şÊıÁ¿
+p_il = 0; %æ— å±€éƒ¨æœç´¢
+p_cr=0.9;  %äº¤å‰æ¦‚ç‡
+F=0.5;   %çªå˜æ¯”ä¾‹å› æ•°
+B=0.4;  %é¿å…å†·å¯åŠ¨çš„å‚æ•°
+total_case=1; %å¤šä»»åŠ¡é—®é¢˜æ€»æ•°é‡
+repetition=1; %é‡å¤è¿è¡Œæ¬¡æ•°
+results_record=zeros(repetition,15);% 4 case ä¹˜ä»¥ç»„ä»¶æ•°é‡
 for i=1:repetition
     for j=1:total_case
           ln=5*(j-1)+1;
@@ -24,4 +24,3 @@ save results_record results_record;
 
 toc
 
-%% »­Í¼
