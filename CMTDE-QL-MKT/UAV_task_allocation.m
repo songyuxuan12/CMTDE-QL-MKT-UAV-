@@ -3,7 +3,7 @@ function total_revenue = UAV_task_allocation( allocation_vector,num_uavs, num_ta
     % Initialize total revenue
     total_revenue = 0;
 
-    allocation_matrix = reshape(allocation_vector, num_uavs, num_tasks);  % 1x50 vector -> num_uavs x num_tasks matrix
+    allocation_matrix = reshape(allocation_vector, num_uavs, num_tasks);  
     
     remaining_capacities = uav_capacities;
     
@@ -42,7 +42,7 @@ function total_revenue = UAV_task_allocation( allocation_vector,num_uavs, num_ta
         total_revenue = total_revenue + task_revenue;
     end
     
-    total_revenue=-total_revenue;%取负数，为最小值问题
+    total_revenue=-total_revenue;
     
     % Output the allocation and total revenue
 %     disp('Task Allocation Matrix (UAV-task resource distribution):');
