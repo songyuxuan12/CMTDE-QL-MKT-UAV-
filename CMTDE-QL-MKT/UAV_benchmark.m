@@ -1,11 +1,6 @@
 function [Tasks] = UAV_benchmark(index)
 %BENCHMARK function
-%   Input
-%   - index: the index number of problem set
-%   Output:
-%   - Tasks: benchmark problem set
-%   - g1: global optima of Task 1
-%   - g2: global optima of Task 2
+
     switch(index)
         
           case 1
